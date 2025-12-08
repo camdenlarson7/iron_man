@@ -53,14 +53,6 @@ def clear_user_data(user_id: int):
 
 
 def create_demo_gear(user_id: int) -> dict[str, list[int]]:
-    """
-    Create a small set of demo gear items for this user and return a dict:
-        {
-          "run":  [gear_id1, gear_id2, ...],
-          "bike": [gear_id3, ...],
-          "swim": [gear_id4, ...]
-        }
-    """
     shoes_train = insert_gear(
         user_id=user_id,
         gear_type="shoe",
@@ -134,16 +126,6 @@ def random_time() -> str:
 
 
 def trending_workout_for_type(workout_type: str, week_index: int):
-    """
-    Given a workout type ('swim', 'bike', 'run') and which training week we're in,
-    return a realistic set of metrics with a general upward trend:
-
-        duration_seconds, distance_km, effort_level,
-        elevation_gain_m, calories_kcal,
-        avg_heart_rate_bpm, avg_cadence, avg_power_w
-
-    week_index = 0, 1, 2, ... starting from the first week in October.
-    """
     # Growth factor: starts at ~1.0 and grows with weeks
     growth_factor = 1.0 + week_index * 0.10  # +10% per week
 

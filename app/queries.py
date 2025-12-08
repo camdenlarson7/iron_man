@@ -6,12 +6,7 @@ from typing import List, Optional, Tuple
 from db import get_connection
 
 
-# ---------- Helpers ----------
 def list_users() -> List[Tuple[int, str]]:
-    """
-    Return all users as (user_id, username) sorted by username.
-    Useful for a simple 'login' selector in the app.
-    """
     conn = get_connection()
     try:
         with conn:
@@ -24,10 +19,6 @@ def list_users() -> List[Tuple[int, str]]:
         conn.close()
 
 def get_user_id_by_username(username: str) -> Optional[int]:
-    """
-    Look up a user_id given a username.
-    Returns None if not found.
-    """
     conn = get_connection()
     try:
         with conn:
@@ -45,9 +36,6 @@ def get_user_id_by_username(username: str) -> Optional[int]:
 
 
 def get_workout_type_id_by_name(name: str) -> Optional[int]:
-    """
-    Map a workout type name like 'swim', 'bike', 'run' to its ID.
-    """
     conn = get_connection()
     try:
         with conn:
@@ -65,9 +53,6 @@ def get_workout_type_id_by_name(name: str) -> Optional[int]:
 
 
 def list_workout_types() -> List[Tuple[int, str]]:
-    """
-    Return all workout types as (workout_type_id, name).
-    """
     conn = get_connection()
     try:
         with conn:
@@ -99,11 +84,6 @@ def insert_workout(
     gear_id: Optional[int] = None,
     notes: Optional[str] = None,
 ) -> int:
-    """
-    Insert a new workout row and return its workout_id.
-
-    Python code still works in km; we convert to meters for the DB.
-    """
     workout_type_id = get_workout_type_id_by_name(workout_type_name)
     if workout_type_id is None:
         raise ValueError(f"Unknown workout type: {workout_type_name}")
@@ -164,11 +144,6 @@ def get_recent_workouts(
     user_id: int,
     limit: int = 10
 ) -> List[Tuple]:
-    """
-    Return recent workouts for a user, ordered by date + start_time desc.
-    Each row:
-      (workout_date, start_time, workout_type, distance_km, duration_seconds, effort_level, notes)
-    """
     conn = get_connection()
     try:
         with conn:
@@ -203,10 +178,6 @@ def get_weekly_volume_by_sport(
     start_date: date,
     end_date: date
 ) -> List[Tuple]:
-    """
-    Return weekly total distance (km) and duration (sec) per sport between given dates.
-    Each row: (week_start, workout_type, total_distance_km, total_duration_sec)
-    """
     conn = get_connection()
     try:
         with conn:
@@ -235,14 +206,6 @@ def get_weekly_volume_by_sport(
 
 
 def get_total_distance_per_gear(user_id: int) -> List[Tuple]:
-    """
-    Sum distance for each piece of gear for this user.
-
-    Uses the gear_distance VIEW, which already joins Gear + Workout_Gear + Workouts
-    and stores total_distance_m (meters). We convert to km.
-    Returns each row as:
-      (gear_id, gear_type, brand, model, total_distance_km)
-    """
     conn = get_connection()
     try:
         with conn:
@@ -272,13 +235,6 @@ def fetch_workouts(
     start_date: Optional[date] = None,
     end_date: Optional[date] = None,
 ) -> List[Tuple]:
-    """
-    Fetch workouts for a user with optional filters on type and date range.
-
-    Each row:
-      (workout_id, workout_date, start_time, workout_type,
-       distance_km, duration_seconds, effort_level, notes)
-    """
     conn = get_connection()
     try:
         with conn:
@@ -322,16 +278,6 @@ def fetch_run_workouts_view(
     start_date: Optional[date] = None,
     end_date: Optional[date] = None,
 ) -> List[Tuple]:
-    """
-    Fetch run workouts from the run_workouts VIEW.
-
-    Each row:
-      (workout_id, workout_date, start_time,
-       distance_miles, duration_seconds,
-       pace_seconds_per_mile, elevation_gain_m,
-       calories_kcal, avg_heart_rate_bpm,
-       avg_cadence_spm, effort_level, notes)
-    """
     conn = get_connection()
     try:
         with conn:
@@ -375,17 +321,6 @@ def fetch_bike_workouts_view(
     start_date: Optional[date] = None,
     end_date: Optional[date] = None,
 ) -> List[Tuple]:
-    """
-    Fetch bike workouts from the bike_workouts VIEW.
-
-    Each row:
-      (workout_id, workout_date, start_time,
-       distance_miles, duration_seconds,
-       speed_mph, elevation_gain_m,
-       calories_kcal, avg_heart_rate_bpm,
-       avg_cadence_rpm, avg_power_w,
-       effort_level, notes)
-    """
     conn = get_connection()
     try:
         with conn:
@@ -430,16 +365,6 @@ def fetch_swim_workouts_view(
     start_date: Optional[date] = None,
     end_date: Optional[date] = None,
 ) -> List[Tuple]:
-    """
-    Fetch swim workouts from the swim_workouts VIEW.
-
-    Each row:
-      (workout_id, workout_date, start_time,
-       distance_yards, duration_seconds,
-       pace_seconds_per_100yd,
-       calories_kcal, avg_heart_rate_bpm,
-       effort_level, notes)
-    """
     conn = get_connection()
     try:
         with conn:
@@ -485,9 +410,6 @@ def insert_gear(
     purchase_date: Optional[date] = None,
     retired: bool = False,
 ) -> int:
-    """
-    Insert a new gear item for this user and return its gear_id.
-    """
     conn = get_connection()
     try:
         with conn:
@@ -514,10 +436,6 @@ def insert_gear(
 
 
 def attach_gear_to_workout(workout_id: int, gear_ids: list[int]) -> None:
-    """
-    Attach one or more gear items to a workout by inserting into Workout_Gear.
-    Also supports calling multiple times safely via ON CONFLICT DO NOTHING.
-    """
     if not gear_ids:
         return
 

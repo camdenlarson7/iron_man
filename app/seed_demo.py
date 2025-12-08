@@ -6,7 +6,6 @@ def seed_demo_user_and_workout():
     try:
         with conn:
             with conn.cursor() as cur:
-                # 1) Insert demo user (if not exists)
                 cur.execute(
                     """
                     INSERT INTO Users (username, email, password_hash)
@@ -20,14 +19,12 @@ def seed_demo_user_and_workout():
                     user_id = row[0]
                     print(f"Inserted new user 'cam' with user_id={user_id}")
                 else:
-                    # User already exists; fetch ID
                     cur.execute(
                         "SELECT user_id FROM Users WHERE username = 'cam';"
                     )
                     user_id = cur.fetchone()[0]
                     print(f"User 'cam' already exists with user_id={user_id}")
 
-                # 2) Insert or reuse a demo location
                 cur.execute(
                     """
                     SELECT location_id
@@ -55,21 +52,13 @@ def seed_demo_user_and_workout():
                         f"Inserted location 'Case Track' with location_id={location_id}"
                     )
 
-                # 3) Get workout_type_id for 'run'
+                
                 cur.execute(
                     "SELECT workout_type_id FROM Workout_Types WHERE name = 'run';"
                 )
                 workout_type_id = cur.fetchone()[0]
 
-                # 4) Insert a demo workout matching the NEW schema
-                #
-                # Columns now are:
-                #   user_id, workout_type_id, location_id,
-                #   workout_date, start_time,
-                #   duration_seconds, distance_m,
-                #   elevation_gain_m, calories_kcal,
-                #   avg_heart_rate_bpm, avg_cadence, avg_power_w,
-                #   effort_level, gear_id, notes
+                
                 cur.execute(
                     """
                     INSERT INTO Workouts (

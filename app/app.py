@@ -38,7 +38,7 @@ def main():
     st.set_page_config(page_title="IronTrack", layout="wide")
     st.title("IronTrack – Ironman Triathlon Training Tracker")
 
-    # ---------- Sidebar: choose user from DB ----------
+    # Sidebar: choose user from DB
     st.sidebar.header("User")
 
     users = list_users()
@@ -59,14 +59,14 @@ def main():
     user_id = username_to_id[selected_username]
     st.sidebar.caption(f"Logged in as {selected_username}")
 
-    # ---------- Navigation ----------
+    # Navigation
     st.sidebar.header("Navigation")
     page = st.sidebar.radio(
         "Go to",
         ["Dashboard", "View Workouts", "Add Workout", "Gear"],
     )
 
-    # ---------- Page routing ----------
+    # Page routing
     if page == "Dashboard":
         render_dashboard(user_id)
     elif page == "View Workouts":
@@ -77,7 +77,7 @@ def main():
         render_gear(user_id)
 
 
-# ---------- Dashboard ----------
+# Dashboard 
 
 def render_dashboard(user_id: int):
     st.header("Dashboard – Weekly Training Volume")
@@ -121,7 +121,7 @@ def render_dashboard(user_id: int):
     df = df.dropna(subset=["total_distance_km"])
 
     # Sport filter
-        # ----- Sport filter (checkboxes instead of dropdown) -----
+        # Sport filter (checkboxes instead of dropdown)
     all_sports = sorted(df["workout_type"].unique())
 
     st.markdown("**Sports to show**")
@@ -173,10 +173,10 @@ def render_dashboard(user_id: int):
                 value=f"{row['total_distance_km']:.1f} km",
             )
 
-    # ===== Side-by-side charts =====
+    # Side-by-side charts 
     left_col, right_col = st.columns(2)
 
-    # ----- Left: Weekly Distance -----
+    # Left: Weekly Distance 
     with left_col:
         st.markdown("**Weekly Distance (km)**")
 
@@ -213,7 +213,7 @@ def render_dashboard(user_id: int):
 
             st.altair_chart(distance_chart, width="stretch")
 
-    # ----- Right: Weekly Time -----
+    # Right: Weekly Time 
     with right_col:
         st.markdown("**Weekly Time (hours)**")
 
@@ -251,12 +251,12 @@ def render_dashboard(user_id: int):
             st.altair_chart(time_chart, width="stretch")
 
 
-# ---------- View Workouts ----------
+# View Workouts
 
 def render_view_workouts(user_id: int):
     st.header("View Workouts")
 
-    # --- Filter controls ---
+    # Filter controls
     col1, col2 = st.columns(2)
     with col1:
         workout_scope = st.radio(
@@ -275,7 +275,7 @@ def render_view_workouts(user_id: int):
         st.error("Start date must be before end date.")
         return
 
-    # --- Query based on selected scope ---
+    # Query based on selected scope
     if workout_scope == "All":
         # Base workouts table via existing fetch_workouts()
         rows = fetch_workouts(
@@ -452,7 +452,7 @@ def render_view_workouts(user_id: int):
         )
 
 
-# ---------- Add Workout ----------
+# Add Workout
 def render_add_workout(user_id: int):
     st.header("Add Workout")
 
@@ -632,12 +632,12 @@ def render_add_workout(user_id: int):
             st.success(f"Workout saved (id={workout_id})")
 
 
-# ---------- Gear ----------
+# Gear
 
 def render_gear(user_id: int):
     st.header("Gear")
 
-    # --------- Add new gear form ---------
+    # Add new gear form
     with st.form("add_gear_form"):
         st.subheader("Add new gear")
 

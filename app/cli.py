@@ -1,5 +1,3 @@
-# app/cli.py
-
 from datetime import datetime
 
 from queries import (
@@ -13,9 +11,6 @@ from queries import (
 
 
 def prompt_username() -> int:
-    """
-    Ask for a username, look up user_id, and return it.
-    """
     while True:
         username = input("Enter your username (e.g., 'cam'): ").strip()
         user_id = get_user_id_by_username(username)
