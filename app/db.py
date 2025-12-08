@@ -8,7 +8,7 @@ def get_connection():
         port=5432,
         dbname="triathlon_db",
         user="tri_user",
-        password="Soccercam57@",
+        # password="putpasswordhere",
     )
     return conn
 
